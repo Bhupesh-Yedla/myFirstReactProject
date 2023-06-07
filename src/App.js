@@ -1,25 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import Login from './pages/login.js';
+import { BrowserRouter as Router, Switch, Route, Redirect, Routes } from 'react-router-dom';
+import LoginSuccess from './pages/login-success.js';
+import SignUp from './pages/signup.js';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Enterscore from './pages/Enterscore.js';
 
 function App() {
+  const LOCAL_STORAGE_KEY = "details";
+  const [details, setDetails] = useState([]);
+
+  const detailsHandler = (user) => {
+    console.log(user);
+    setDetails([...details, details]);
+  };
+
+  useEffect(() => {
+    const retrieveDetails = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (retrieveDetails) setDetails([retrieveDetails]);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(details));
+  }, [details]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <ToastContainer />
+      <Router>
+        {/* <UserList details={details} /> */}
+        <Routes>
+          <Route path="/" element={<Login detailsHandler={detailsHandler}/>} />
+          <Route path="/welcome" element={<LoginSuccess />} />
+          <Route path="/signup" element={<SignUp detailsHandler={detailsHandler}/>} />
+          <Route path="/enterscore" element={<Enterscore/>}/>
+        </Routes>
+      </Router>
     </div>
   );
 }
 
+
+
 export default App;
+ 
