@@ -6,16 +6,16 @@ import { useNavigate } from "react-router-dom";
 function Teams(props) {
 
     const navigate = useNavigate();
-    
+
     const callEnterscore = () => {
         navigate("/enterscore");
     }
 
     return (
         <div>
-            <label>Team1</label>
+            <label>Batting Team</label>
             <input type="text" />
-            <label>Team2</label>
+            <label>Bowling Team</label>
             <input type="text" />
             <button type="submit" onClick={callEnterscore}>Submit</button>
         </div>
@@ -24,7 +24,7 @@ function Teams(props) {
 
 class LoginSuccess extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props)
         this.state = {
             showTeam: false,
