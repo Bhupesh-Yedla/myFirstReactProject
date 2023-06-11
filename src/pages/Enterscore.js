@@ -5,7 +5,8 @@ function Enterscore(props) {
     const [scores, setScores] = useState([{ runs: 0, balls: 0, wkts: 0, showPlus: true }]);
     const [rowCountBowling, setRowCountBowling] = useState(1);
     const [scoresBowling, setScoresBowling] = useState([{ runs: 0, balls: 0, wkts: 0, showPlus: true }]);
-    const [currentRow, setCurrentRow] = useState(0);
+    const [battingTotal, setBattingTotal] = useState({ runs: 0, balls: 0 });
+    const [serialNumbers, setSerialNumbers] = useState([1]);
 
     const handleClick = (data, index) => {
         setScores((prevScores) => {
@@ -22,55 +23,93 @@ function Enterscore(props) {
             if (data === "+") {
                 if (rowCount < 11) {
                     setRowCount(rowCount + 1);
-                    updatedScores[index].showPlus = false; // Remove the "+" symbol from the newly created row
-                    updatedScores.push({ runs: 0, balls: 0, wkts: 0, showPlus: true }); // Add a new player with initial values and show "+" symbol to the scores array
+                    updatedScores[index].showPlus = false; // Remove the "+" symbol from the current row
+                    updatedScores.push({ runs: 0, balls: 0, wkts: 0, showPlus: true });
+
                 }
             }
+            else {
+                // Set showPlus to true for all rows except the last row
+                updatedScores.forEach((score, i) => {
+                    score.showPlus = i === updatedScores.length - 1;
+                });
+            }
+
+            // Recalculate battingTotal
+            const totalRuns = updatedScores.reduce((total, score) => total + score.runs, 0);
+            const totalBalls = updatedScores.reduce((total, score) => total + score.balls, 0);
+            setBattingTotal({ runs: totalRuns, balls: totalBalls });
 
             return updatedScores;
         });
+        if (data === "+") {
+            setSerialNumbers(true); // Display serial numbers in previous row's "Add" column
+        }
     };
+
+
 
 
     const handleClickBowling = (data, index) => {
         setScoresBowling((prevScoresBowling) => {
-            const updatedScores = [...prevScoresBowling];
-            const updatedPlayer = { ...updatedScores[index] };
+            const updatedScoresBowling = [...prevScoresBowling];
+            const updatedPlayerBowling = { ...updatedScoresBowling[index] };
 
             if (!isNaN(data)) {
-                updatedPlayer.runs += parseInt(data);
-                updatedPlayer.balls += 1;
+                updatedPlayerBowling.runs += parseInt(data);
+                updatedPlayerBowling.balls += 1;
             } else if (data === "WD" || data === "NB") {
-                updatedPlayer.runs += 1;
+                updatedPlayerBowling.runs += 1;
+                updatedPlayerBowling.balls += 0;
+
+                setBattingTotal((prevBattingTotal) => ({
+                    ...prevBattingTotal,
+                    runs: prevBattingTotal.runs++
+                }));
             } else if (data === "Wkt") {
-                updatedPlayer.wkts += 1;
-                updatedPlayer.balls += 1;
+                updatedPlayerBowling.wkts += 1;
+                updatedPlayerBowling.balls += 1;
             }
 
-
-
-            updatedScores[index] = updatedPlayer; // Update the specific player in the scores array
+            updatedScoresBowling[index] = updatedPlayerBowling; // Update the specific player in the scores array
 
             if (data === "+") {
                 if (rowCountBowling < 5) {
                     setRowCountBowling(rowCountBowling + 1);
-                    updatedScores[index].showPlus = false; // Remove the "+" symbol from the newly created row
-                    updatedScores.push({ runs: 0, balls: 0, wkts: 0, showPlus: true }); // Add a new player with initial values and show "+" symbol to the scores array
+                    updatedScoresBowling[index].showPlus = false; // Remove the "+" symbol from the newly created row
+                    updatedScoresBowling.push({ runs: 0, balls: 0, wkts: 0, showPlus: true }); // Add a new player with initial values and show "+" symbol to the scores array
                 }
             }
 
-            return updatedScores;
+
+
+            return updatedScoresBowling;
         });
+
+
     };
 
     const handleInputChange = (event, index, key) => {
         const { value } = event.target;
         setScores((prevScores) => {
-            const updatedScores = [...prevScores];
-            updatedScores[index][key] = value;
+            const updatedScores = prevScores.map((score, i) => {
+                if (i === index) {
+                    return { ...score, [key]: value };
+                } else {
+                    return score;
+                }
+            });
+
+            // Recalculate battingTotal
+            const totalRuns = updatedScores.reduce((total, score) => total + parseInt(score.runs), 0);
+            const totalBalls = updatedScores.reduce((total, score) => total + parseInt(score.balls), 0);
+            setBattingTotal({ runs: totalRuns, balls: totalBalls });
+
             return updatedScores;
         });
     };
+
+
 
     const handleInputChangeBowling = (event, index, key) => {
         const { value } = event.target;
@@ -96,6 +135,7 @@ function Enterscore(props) {
                         <th>Four </th>
                         <th>Five </th>
                         <th>Six </th>
+                        <th>Out </th>
                         <th>Total Runs</th>
                         <th>Balls Faced</th>
                     </tr>
@@ -104,6 +144,7 @@ function Enterscore(props) {
                     {scores.map((score, index) => (
                         <tr key={index}>
                             <td style={styles.cell}>
+                                {serialNumbers && index + 1} {/* Serial number */}
                                 {score.showPlus && (
                                     <button onClick={() => handleClick("+", index)}>+</button>
                                 )}
@@ -136,14 +177,27 @@ function Enterscore(props) {
                                 <button onClick={() => handleClick("6", index)}>6</button>
                             </td>
                             <td style={styles.cell}>
+                                <button onClick={() => handleClick("0", index)}>O</button>
+                            </td>
+                            <td style={styles.cell}>
                                 <text>{score.runs}</text>
                             </td>
                             <td style={styles.cell}>
                                 <text>{score.balls}</text>
                             </td>
+
                         </tr>
+
                     ))}
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td colSpan="2"></td>
+                        <td colSpan="8"></td>
+                        <td style={styles.cell}><strong>Total: {battingTotal.runs}</strong></td>
+                        <td style={styles.cell}><strong>Overs: {(battingTotal.balls % 6 === 0) ? (battingTotal.balls / 6 + "." + battingTotal.balls % 6) : ((battingTotal.balls > 6 ? parseInt(battingTotal.balls / 6) + "." + battingTotal.balls % 6 : battingTotal.balls / 10))}</strong></td>
+                    </tr>
+                </tfoot>
             </table>
             <br />
             <h1>BOWLING</h1>
@@ -212,7 +266,7 @@ function Enterscore(props) {
                                 <button onClick={() => handleClickBowling("NB", index)}>NB</button>
                             </td>
                             <td style={styles.cell}>
-                                <text>{(score.balls % 6 == 0) ? (score.balls / 6 + "." + score.balls % 6) : ((score.balls > 6 ? parseInt(score.balls / 6) + "." + score.balls % 6 : score.balls / 10))}</text>
+                                <text>{(score.balls % 6 === 0) ? (score.balls / 6 + "." + score.balls % 6) : ((score.balls > 6 ? parseInt(score.balls / 6) + "." + score.balls % 6 : score.balls / 10))}</text>
                             </td>
                             <td style={styles.cell}>
                                 <text>{score.runs}</text>
