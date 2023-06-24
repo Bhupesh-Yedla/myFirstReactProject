@@ -2,11 +2,12 @@ import React, { useState } from "react";
 
 function Enterscore(props) {
     const [rowCount, setRowCount] = useState(1);
-    const [scores, setScores] = useState([{ runs: 0, balls: 0, wkts: 0, showPlus: true }]);
+    const [scores, setScores] = useState([{ runs: 0, balls: 0, wkts: 0, extras: 0, showPlus: true }]);
     const [rowCountBowling, setRowCountBowling] = useState(1);
-    const [scoresBowling, setScoresBowling] = useState([{ runs: 0, balls: 0, wkts: 0, showPlus: true }]);
-    const [battingTotal, setBattingTotal] = useState({ runs: 0, balls: 0 });
+    const [scoresBowling, setScoresBowling] = useState([{ runs: 0, balls: 0, wkts: 0, extras: 0, showPlus: true }]);
+    const [battingTotal, setBattingTotal] = useState({ runs: 0, balls: 0, wkts: 0, extras: 0 });
     const [serialNumbers, setSerialNumbers] = useState([1]);
+
 
     const handleClick = (data, index) => {
         setScores((prevScores) => {
@@ -14,11 +15,14 @@ function Enterscore(props) {
             const updatedPlayer = { ...updatedScores[index] };
 
             if (data !== "+") {
-                updatedPlayer.runs += parseInt(data);
-                updatedPlayer.balls += 1;
+                if (data !== "WD" && data !== "NB") {
+                    updatedPlayer.runs += parseInt(data);
+                    updatedPlayer.balls += 1;
+                }
             }
 
-            updatedScores[index] = updatedPlayer; // Update the specific player in the scores array
+            updatedScores[index] = updatedPlayer;
+            // Update the specific player in the scores array
 
             if (data === "+") {
                 if (rowCount < 11) {
@@ -34,11 +38,22 @@ function Enterscore(props) {
                     score.showPlus = i === updatedScores.length - 1;
                 });
             }
+            //setScores(updatedScores);
 
             // Recalculate battingTotal
             const totalRuns = updatedScores.reduce((total, score) => total + score.runs, 0);
             const totalBalls = updatedScores.reduce((total, score) => total + score.balls, 0);
-            setBattingTotal({ runs: totalRuns, balls: totalBalls });
+
+
+            // setBattingTotal({ runs: totalRuns, balls: totalBalls, wkts: totalWkts });
+
+            setBattingTotal((prevBattingTotal) => ({
+                ...prevBattingTotal,
+                runs: totalRuns,
+                balls: totalBalls,
+            }));
+
+
 
             return updatedScores;
         });
@@ -46,8 +61,6 @@ function Enterscore(props) {
             setSerialNumbers(true); // Display serial numbers in previous row's "Add" column
         }
     };
-
-
 
 
     const handleClickBowling = (data, index) => {
@@ -61,14 +74,19 @@ function Enterscore(props) {
             } else if (data === "WD" || data === "NB") {
                 updatedPlayerBowling.runs += 1;
                 updatedPlayerBowling.balls += 0;
-
                 setBattingTotal((prevBattingTotal) => ({
                     ...prevBattingTotal,
-                    runs: prevBattingTotal.runs++
+                    extras: prevBattingTotal.extras++,
                 }));
             } else if (data === "Wkt") {
                 updatedPlayerBowling.wkts += 1;
                 updatedPlayerBowling.balls += 1;
+
+                setBattingTotal((prevBattingTotal) => ({
+                    ...prevBattingTotal,
+                    wkts: prevBattingTotal.wkts++,
+                }));
+
             }
 
             updatedScoresBowling[index] = updatedPlayerBowling; // Update the specific player in the scores array
@@ -91,19 +109,16 @@ function Enterscore(props) {
 
     const handleInputChange = (event, index, key) => {
         const { value } = event.target;
+        const inputValue = value.trim() === '' ? '0' : value;
+
         setScores((prevScores) => {
             const updatedScores = prevScores.map((score, i) => {
                 if (i === index) {
-                    return { ...score, [key]: value };
+                    return { ...score, [key]: inputValue };
                 } else {
                     return score;
                 }
             });
-
-            // Recalculate battingTotal
-            const totalRuns = updatedScores.reduce((total, score) => total + parseInt(score.runs), 0);
-            const totalBalls = updatedScores.reduce((total, score) => total + parseInt(score.balls), 0);
-            setBattingTotal({ runs: totalRuns, balls: totalBalls });
 
             return updatedScores;
         });
@@ -116,6 +131,9 @@ function Enterscore(props) {
         setScoresBowling((prevScoresBowling) => {
             const updatedScores = [...prevScoresBowling];
             updatedScores[index][key] = parseInt(value);
+
+            // Recalculate battingTotal runs based on the updated bowling scores
+
             return updatedScores;
         });
     };
@@ -180,10 +198,10 @@ function Enterscore(props) {
                                 <button onClick={() => handleClick("0", index)}>O</button>
                             </td>
                             <td style={styles.cell}>
-                                <text>{score.runs}</text>
+                                {score.runs}
                             </td>
                             <td style={styles.cell}>
-                                <text>{score.balls}</text>
+                                {score.balls}
                             </td>
 
                         </tr>
@@ -194,8 +212,18 @@ function Enterscore(props) {
                     <tr>
                         <td colSpan="2"></td>
                         <td colSpan="8"></td>
-                        <td style={styles.cell}><strong>Total: {battingTotal.runs}</strong></td>
+                        <td style={styles.cell}><strong>Total: {battingTotal.runs}/{battingTotal.wkts}</strong></td>
                         <td style={styles.cell}><strong>Overs: {(battingTotal.balls % 6 === 0) ? (battingTotal.balls / 6 + "." + battingTotal.balls % 6) : ((battingTotal.balls > 6 ? parseInt(battingTotal.balls / 6) + "." + battingTotal.balls % 6 : battingTotal.balls / 10))}</strong></td>
+                    </tr>
+                    <tr>
+                        <td colSpan="2"></td>
+                        <td colSpan="8"></td>
+                        <td style={styles.cell}><strong>Extras: {battingTotal.extras}</strong></td>
+                    </tr>
+                    <tr>
+                        <td colSpan="2"></td>
+                        <td colSpan="8"></td>
+                        <td style={styles.cell}><strong>Grand Total: {battingTotal.extras + battingTotal.runs}</strong></td>
                     </tr>
                 </tfoot>
             </table>
@@ -266,13 +294,13 @@ function Enterscore(props) {
                                 <button onClick={() => handleClickBowling("NB", index)}>NB</button>
                             </td>
                             <td style={styles.cell}>
-                                <text>{(score.balls % 6 === 0) ? (score.balls / 6 + "." + score.balls % 6) : ((score.balls > 6 ? parseInt(score.balls / 6) + "." + score.balls % 6 : score.balls / 10))}</text>
+                                {(score.balls % 6 === 0) ? (score.balls / 6 + "." + score.balls % 6) : ((score.balls > 6 ? parseInt(score.balls / 6) + "." + score.balls % 6 : score.balls / 10))}
                             </td>
                             <td style={styles.cell}>
-                                <text>{score.runs}</text>
+                                {score.runs}
                             </td>
                             <td style={styles.cell}>
-                                <text>{score.wkts}</text>
+                                {score.wkts}
                             </td>
                         </tr>
                     ))}
