@@ -19,4 +19,15 @@ export const signup = (event) => {
     .then((response) => response.data);
 };
 
+export const endInnings = (userdata) => {
+    console.log(userdata)
+    return myAxios
+        .post("/enterscore", JSON.stringify(userdata), {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then((response) => response.data)
+}
+
 export default UserService;

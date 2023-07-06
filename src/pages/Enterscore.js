@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {endInnings} from "../services/user-service";
 
 function Enterscore(props) {
     const [rowCount, setRowCount] = useState(1);
@@ -8,6 +9,22 @@ function Enterscore(props) {
     const [battingTotal, setBattingTotal] = useState({ runs: 0, balls: 0, wkts: 0, extras: 0 });
     const [serialNumbers, setSerialNumbers] = useState([1]);
 
+
+    const sendRequest = () => {
+        const data = {
+            batting: scores,
+            bowling: scoresBowling,
+            battingTotal: battingTotal
+        };
+
+        endInnings(data)
+        .then((response) => {
+            console.log("Data sent successfully:", response)
+        })
+        .catch((error) => {
+            console.error("Error sending data", error)
+        });
+    }
 
     const handleClick = (data, index) => {
         setScores((prevScores) => {
@@ -127,12 +144,18 @@ function Enterscore(props) {
 
 
     const handleInputChangeBowling = (event, index, key) => {
-        const { value } = event.target;
-        setScoresBowling((prevScoresBowling) => {
-            const updatedScores = [...prevScoresBowling];
-            updatedScores[index][key] = parseInt(value);
 
-            // Recalculate battingTotal runs based on the updated bowling scores
+        const { value } = event.target;
+        const inputValue = value.trim() === '' ? '0' : value;
+
+        setScoresBowling((prevScoresBowling) => {
+            const updatedScores = prevScoresBowling.map((score, i) => {
+                if (i === index) {
+                    return { ...score, [key]: inputValue };
+                } else {
+                    return score;
+                }
+            });
 
             return updatedScores;
         });
@@ -307,7 +330,7 @@ function Enterscore(props) {
                 </tbody>
             </table>
             <br />
-            <button type="submit">End Innings</button>
+            <button type="submit" onClick={sendRequest}>End Innings</button>
         </>
     );
 }
