@@ -1,29 +1,59 @@
-import React, { useState } from "react";
-import {endInnings} from "../services/user-service";
+import React, { useEffect, useState } from "react";
+
+import { endInnings } from "../services/user-service";
 
 function Enterscore(props) {
     const [rowCount, setRowCount] = useState(1);
-    const [scores, setScores] = useState([{ runs: 0, balls: 0, wkts: 0, extras: 0, showPlus: true }]);
+    const [scores, setScores] = useState([{ runs: 0, balls: 0, wkts: 0, extras: 0, showPlus: true, name: "" }]);
     const [rowCountBowling, setRowCountBowling] = useState(1);
-    const [scoresBowling, setScoresBowling] = useState([{ runs: 0, balls: 0, wkts: 0, extras: 0, showPlus: true }]);
+    const [scoresBowling, setScoresBowling] = useState([{ runs: 0, balls: 0, wkts: 0, extras: 0, showPlus: true, name: "" }]);
     const [battingTotal, setBattingTotal] = useState({ runs: 0, balls: 0, wkts: 0, extras: 0 });
     const [serialNumbers, setSerialNumbers] = useState([1]);
+    const [teams, setTeams] = useState({ team1: "", team2: "" });
+
+    useEffect(() => {
+        const team1 = localStorage.getItem("team1");
+        const team2 = localStorage.getItem("team2");
+        console.log(team1 + " " + team2);
+        if (team1 && team2)
+            setTeams({ team1, team2 })
+    }, []);
 
 
-    const sendRequest = () => {
+    const resetData = (innings) => {
+        setRowCount(1);
+        setScores([{ runs: 0, balls: 0, wkts: 0, extras: 0, showPlus: true, name: "" }]);
+        setRowCountBowling(1);
+        setScoresBowling([{ runs: 0, balls: 0, wkts: 0, extras: 0, showPlus: true, name: "" }]);
+        setBattingTotal({ runs: 0, balls: 0, wkts: 0, extras: 0 });
+        setSerialNumbers(1);
+        if (innings === "endInnings")
+            setTeams({ team1: "", team2: "" });
+        else
+            setTeams({ team1: teams.team2, team2: teams.team1 });
+    }
+
+    const sendRequest = (innings) => {
+
         const data = {
+            teams: teams,
             batting: scores,
             bowling: scoresBowling,
             battingTotal: battingTotal
         };
 
         endInnings(data)
-        .then((response) => {
-            console.log("Data sent successfully:", response)
-        })
-        .catch((error) => {
-            console.error("Error sending data", error)
-        });
+            .then((response) => {
+                console.log("Data sent successfully:", response);
+                if (innings === "endInnings")
+                    resetData("endInnings");
+                else
+                    resetData("nextInnings");
+            })
+            .catch((error) => {
+                console.error("Error sending data", error)
+            });
+
     }
 
     const handleClick = (data, index) => {
@@ -163,7 +193,8 @@ function Enterscore(props) {
 
     return (
         <>
-            <h1>BATTING</h1>
+            <h1>BATTING: {teams.team1}</h1>
+
             <table>
                 <thead>
                     <tr>
@@ -193,6 +224,7 @@ function Enterscore(props) {
                             <td style={styles.cell}>
                                 <input
                                     type="text"
+                                    value={score.name}
                                     onChange={(e) => handleInputChange(e, index, "name")}
                                 />
                             </td>
@@ -246,12 +278,12 @@ function Enterscore(props) {
                     <tr>
                         <td colSpan="2"></td>
                         <td colSpan="8"></td>
-                        <td style={styles.cell}><strong>Grand Total: {battingTotal.extras + battingTotal.runs}</strong></td>
+                        <td style={styles.cell}><strong>Grand Total: {battingTotal.extras + battingTotal.runs}/{battingTotal.wkts}</strong></td>
                     </tr>
                 </tfoot>
             </table>
             <br />
-            <h1>BOWLING</h1>
+            <h1>BOWLING: {teams.team2}</h1>
             <table>
                 <thead>
                     <tr>
@@ -283,6 +315,7 @@ function Enterscore(props) {
                             <td style={styles.cell}>
                                 <input
                                     type="text"
+                                    value={score.name}
                                     onChange={(e) => handleInputChangeBowling(e, index, "name")}
                                 />
                             </td>
@@ -330,7 +363,8 @@ function Enterscore(props) {
                 </tbody>
             </table>
             <br />
-            <button type="submit" onClick={sendRequest}>End Innings</button>
+            <button type="submit" onClick={() => sendRequest("nextInnings")}>Next Innings</button>
+            <button type="submit" onClick={() => sendRequest("endInnings")}>End Innings</button>
         </>
     );
 }

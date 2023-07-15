@@ -1,7 +1,6 @@
-import React from "react";
 import Enterscore from "./Enterscore";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-
 
 function Teams(props) {
 
@@ -11,12 +10,20 @@ function Teams(props) {
         navigate("/enterscore");
     }
 
+    const handleInput = (e) =>{
+        const {name, value} = e.target;
+        if(name==='team1')
+            localStorage.setItem('team1',value);
+        else
+            localStorage.setItem('team2',value);
+    }
+
     return (
         <div>
             <label>Batting Team</label>
-            <input type="text" />
+            <input type="text" name="team1" onChange={handleInput}/>
             <label>Bowling Team</label>
-            <input type="text" />
+            <input type="text" name="team2" onChange={handleInput}/>
             <button type="submit" onClick={callEnterscore}>Submit</button>
         </div>
     );

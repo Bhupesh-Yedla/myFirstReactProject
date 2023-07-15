@@ -1,8 +1,10 @@
+import 'react-toastify/dist/ReactToastify.css';
+
 import React, { useState } from "react";
 import UserService, { login } from "../services/user-service.js";
-import { useNavigate } from "react-router-dom";
+
 import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
 
 const Login = (props) => {
   const [username, setUsername] = useState("");

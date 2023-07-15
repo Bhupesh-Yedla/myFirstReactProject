@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import 'react-toastify/dist/ReactToastify.css';
+
+import React, { useEffect, useState } from 'react';
+import { Redirect, Route, BrowserRouter as Router, Routes, Switch } from 'react-router-dom';
+
+import Enterscore from './pages/Enterscore.js';
 import Login from './pages/login.js';
-import { BrowserRouter as Router, Switch, Route, Redirect, Routes } from 'react-router-dom';
 import LoginSuccess from './pages/login-success.js';
 import SignUp from './pages/signup.js';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Enterscore from './pages/Enterscore.js';
+//import 'bootstrap/dist/css/bootstrap.min.css';
+
+
 
 function App() {
   const LOCAL_STORAGE_KEY = "details";
