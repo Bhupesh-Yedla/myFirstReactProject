@@ -1,3 +1,4 @@
+import { Box, Button, Table, TableBody, TableCell, TableFooter, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
 import { endInnings } from "../services/user-service";
@@ -123,7 +124,7 @@ function Enterscore(props) {
                 updatedPlayerBowling.balls += 0;
                 setBattingTotal((prevBattingTotal) => ({
                     ...prevBattingTotal,
-                    extras: prevBattingTotal.extras++,
+                    extras: prevBattingTotal.extras + 1,
                 }));
             } else if (data === "Wkt") {
                 updatedPlayerBowling.wkts += 1;
@@ -131,7 +132,7 @@ function Enterscore(props) {
 
                 setBattingTotal((prevBattingTotal) => ({
                     ...prevBattingTotal,
-                    wkts: prevBattingTotal.wkts++,
+                    wkts: prevBattingTotal.wkts + 1,
                 }));
 
             }
@@ -193,178 +194,181 @@ function Enterscore(props) {
 
     return (
         <>
-            <h1>BATTING: {teams.team1}</h1>
+            <Typography variant="h3">BATTING: {teams.team1}</Typography>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Add</th>
-                        <th>Names</th>
-                        <th>Dots</th>
-                        <th>Single</th>
-                        <th>Double</th>
-                        <th>Three </th>
-                        <th>Four </th>
-                        <th>Five </th>
-                        <th>Six </th>
-                        <th>Out </th>
-                        <th>Total Runs</th>
-                        <th>Balls Faced</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Add</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Names</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Dots</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Single</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Double</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Three </TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Four </TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Five </TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Six </TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Out </TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Total Runs</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Balls Faced</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
                     {scores.map((score, index) => (
-                        <tr key={index}>
-                            <td style={styles.cell}>
+                        <TableRow key={index}>
+                            <TableCell style={styles.cell}>
                                 {serialNumbers && index + 1} {/* Serial number */}
                                 {score.showPlus && (
-                                    <button onClick={() => handleClick("+", index)}>+</button>
+                                    <Button variant="contained" onClick={() => handleClick("+", index)}>+</Button>
                                 )}
-                            </td>
-                            <td style={styles.cell}>
-                                <input
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <TextField
                                     type="text"
                                     value={score.name}
                                     onChange={(e) => handleInputChange(e, index, "name")}
                                 />
-                            </td>
-                            <td style={styles.cell}>
-                                <button onClick={() => handleClick("0", index)}>.</button>
-                            </td>
-                            <td style={styles.cell}>
-                                <button onClick={() => handleClick("1", index)}>1</button>
-                            </td>
-                            <td style={styles.cell}>
-                                <button onClick={() => handleClick("2", index)}>2</button>
-                            </td>
-                            <td style={styles.cell}>
-                                <button onClick={() => handleClick("3", index)}>3</button>
-                            </td>
-                            <td style={styles.cell}>
-                                <button onClick={() => handleClick("4", index)}>4</button>
-                            </td>
-                            <td style={styles.cell}>
-                                <button onClick={() => handleClick("5", index)}>5</button>
-                            </td>
-                            <td style={styles.cell}>
-                                <button onClick={() => handleClick("6", index)}>6</button>
-                            </td>
-                            <td style={styles.cell}>
-                                <button onClick={() => handleClick("0", index)}>O</button>
-                            </td>
-                            <td style={styles.cell}>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <Button variant="contained" onClick={() => handleClick("0", index)}>.</Button>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <Button variant="contained" onClick={() => handleClick("1", index)}>1</Button>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <Button variant="contained" onClick={() => handleClick("2", index)}>2</Button>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <Button variant="contained" onClick={() => handleClick("3", index)}>3</Button>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <Button variant="contained" onClick={() => handleClick("4", index)}>4</Button>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <Button variant="contained" onClick={() => handleClick("5", index)}>5</Button>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <Button variant="contained" onClick={() => handleClick("6", index)}>6</Button>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <Button variant="contained" onClick={() => handleClick("0", index)}>O</Button>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
                                 {score.runs}
-                            </td>
-                            <td style={styles.cell}>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
                                 {score.balls}
-                            </td>
+                            </TableCell>
 
-                        </tr>
+                        </TableRow>
 
                     ))}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colSpan="2"></td>
-                        <td colSpan="8"></td>
-                        <td style={styles.cell}><strong>Total: {battingTotal.runs}/{battingTotal.wkts}</strong></td>
-                        <td style={styles.cell}><strong>Overs: {(battingTotal.balls % 6 === 0) ? (battingTotal.balls / 6 + "." + battingTotal.balls % 6) : ((battingTotal.balls > 6 ? parseInt(battingTotal.balls / 6) + "." + battingTotal.balls % 6 : battingTotal.balls / 10))}</strong></td>
-                    </tr>
-                    <tr>
-                        <td colSpan="2"></td>
-                        <td colSpan="8"></td>
-                        <td style={styles.cell}><strong>Extras: {battingTotal.extras}</strong></td>
-                    </tr>
-                    <tr>
-                        <td colSpan="2"></td>
-                        <td colSpan="8"></td>
-                        <td style={styles.cell}><strong>Grand Total: {battingTotal.extras + battingTotal.runs}/{battingTotal.wkts}</strong></td>
-                    </tr>
-                </tfoot>
-            </table>
+                </TableBody>
+                <TableFooter>
+                    <TableRow>
+                        <TableCell colSpan="2"></TableCell>
+                        <TableCell colSpan="8"></TableCell>
+                        <TableCell style={styles.cell}><strong>Total: {battingTotal.runs}/{battingTotal.wkts}</strong></TableCell>
+                        <TableCell style={styles.cell}><strong>Overs: {(battingTotal.balls % 6 === 0) ? (battingTotal.balls / 6 + "." + battingTotal.balls % 6) : ((battingTotal.balls > 6 ? parseInt(battingTotal.balls / 6) + "." + battingTotal.balls % 6 : battingTotal.balls / 10))}</strong></TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell colSpan="2"></TableCell>
+                        <TableCell colSpan="8"></TableCell>
+                        <TableCell style={styles.cell}><strong>Extras: {battingTotal.extras}</strong></TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell colSpan="2"></TableCell>
+                        <TableCell colSpan="8"></TableCell>
+                        <TableCell style={styles.cell}><strong>Grand Total: {battingTotal.extras + battingTotal.runs}/{battingTotal.wkts}</strong></TableCell>
+                    </TableRow>
+                </TableFooter>
+            </Table>
             <br />
-            <h1>BOWLING: {teams.team2}</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Add</th>
-                        <th>Names</th>
-                        <th>Dots</th>
-                        <th>Single</th>
-                        <th>Double</th>
-                        <th>Three </th>
-                        <th>Four </th>
-                        <th>Five </th>
-                        <th>Six </th>
-                        <th>Wickets</th>
-                        <th>Wides</th>
-                        <th>No Balls</th>
-                        <th>Balls bowled</th>
-                        <th>Runs Conceded</th>
-                        <th>Total Wkts</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <Typography variant="h3">BOWLING: {teams.team2}</Typography>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Add</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Names</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Dots</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Single</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Double</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Three </TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Four </TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Five </TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Six </TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Wickets</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Wides</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>No Balls</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Balls bowled</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Runs Conceded</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: '16px' }}>Total Wkts</TableCell>
+                    </TableRow>  
+                </TableHead>
+                <TableBody>
                     {scoresBowling.map((score, index) => (
-                        <tr key={index}>
-                            <td style={styles.cell}>
+                        <TableRow key={index}>
+                            <TableCell style={styles.cell}>
                                 {score.showPlus && (
-                                    <button onClick={() => handleClickBowling("+", index)}>+</button>
+                                    <Button variant="contained" onClick={() => handleClickBowling("+", index)}>+</Button>
                                 )}
-                            </td>
-                            <td style={styles.cell}>
-                                <input
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <TextField
                                     type="text"
                                     value={score.name}
                                     onChange={(e) => handleInputChangeBowling(e, index, "name")}
                                 />
-                            </td>
-                            <td style={styles.cell}>
-                                <button onClick={() => handleClickBowling("0", index)}>.</button>
-                            </td>
-                            <td style={styles.cell}>
-                                <button onClick={() => handleClickBowling("1", index)}>1</button>
-                            </td>
-                            <td style={styles.cell}>
-                                <button onClick={() => handleClickBowling("2", index)}>2</button>
-                            </td>
-                            <td style={styles.cell}>
-                                <button onClick={() => handleClickBowling("3", index)}>3</button>
-                            </td>
-                            <td style={styles.cell}>
-                                <button onClick={() => handleClickBowling("4", index)}>4</button>
-                            </td>
-                            <td style={styles.cell}>
-                                <button onClick={() => handleClickBowling("5", index)}>5</button>
-                            </td>
-                            <td style={styles.cell}>
-                                <button onClick={() => handleClickBowling("6", index)}>6</button>
-                            </td>
-                            <td style={styles.cell}>
-                                <button onClick={() => handleClickBowling("Wkt", index)}>Wkt</button>
-                            </td>
-                            <td style={styles.cell}>
-                                <button onClick={() => handleClickBowling("WD", index)}>WD</button>
-                            </td>
-                            <td style={styles.cell}>
-                                <button onClick={() => handleClickBowling("NB", index)}>NB</button>
-                            </td>
-                            <td style={styles.cell}>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <Button variant="contained" onClick={() => handleClickBowling("0", index)}>.</Button>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <Button variant="contained" onClick={() => handleClickBowling("1", index)}>1</Button>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <Button variant="contained" onClick={() => handleClickBowling("2", index)}>2</Button>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <Button variant="contained" onClick={() => handleClickBowling("3", index)}>3</Button>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <Button variant="contained" onClick={() => handleClickBowling("4", index)}>4</Button>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <Button variant="contained" onClick={() => handleClickBowling("5", index)}>5</Button>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <Button variant="contained" onClick={() => handleClickBowling("6", index)}>6</Button>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <Button variant="contained" onClick={() => handleClickBowling("Wkt", index)}>Wkt</Button>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <Button variant="contained" onClick={() => handleClickBowling("WD", index)}>WD</Button>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
+                                <Button variant="contained" onClick={() => handleClickBowling("NB", index)}>NB</Button>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
                                 {(score.balls % 6 === 0) ? (score.balls / 6 + "." + score.balls % 6) : ((score.balls > 6 ? parseInt(score.balls / 6) + "." + score.balls % 6 : score.balls / 10))}
-                            </td>
-                            <td style={styles.cell}>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
                                 {score.runs}
-                            </td>
-                            <td style={styles.cell}>
+                            </TableCell>
+                            <TableCell style={styles.cell}>
                                 {score.wkts}
-                            </td>
-                        </tr>
+                            </TableCell>
+                        </TableRow>
                     ))}
-                </tbody>
-            </table>
+                </TableBody>
+            </Table>
             <br />
-            <button type="submit" onClick={() => sendRequest("nextInnings")}>Next Innings</button>
-            <button type="submit" onClick={() => sendRequest("endInnings")}>End Innings</button>
+            <Box sx={{display:'flex', justifyContent: 'left', gap:'16px'}}>
+                <Button variant="contained" type="submit" onClick={() => sendRequest("nextInnings")}>Next Innings</Button>
+                <Button variant="contained" type="submit" onClick={() => sendRequest("endInnings")}>End Innings</Button>
+            </Box>
+
         </>
     );
 }

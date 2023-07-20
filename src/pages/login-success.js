@@ -1,3 +1,5 @@
+import { Button, Container, TextField, Typography } from '@mui/material';
+
 import Enterscore from "./Enterscore";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -19,13 +21,29 @@ function Teams(props) {
     }
 
     return (
-        <div>
-            <label>Batting Team</label>
-            <input type="text" name="team1" onChange={handleInput}/>
-            <label>Bowling Team</label>
-            <input type="text" name="team2" onChange={handleInput}/>
-            <button type="submit" onClick={callEnterscore}>Submit</button>
-        </div>
+        <Container>
+          <Typography variant="h2">Enter Team Details</Typography>
+          <TextField 
+            label = "Batting Team"
+            name="team1"
+            onChange={handleInput}
+            variant="outlined"
+            fullWidth
+            margin="normal"/>
+            <TextField 
+            label="Bowling Team"
+            name="team2" 
+            onChange={handleInput}
+            variant="outlined"
+            fullWidth
+            margin="normal"/>
+            <Button 
+              onClick={callEnterscore}
+              variant="contained"
+              color="primary"
+              fullWidth
+              >Submit</Button>
+        </Container>
     );
 }
 
@@ -39,13 +57,13 @@ class LoginSuccess extends React.Component {
     }
     render() {
         return (
-            <div>
-                <h2>
-                    Welcome to my new react app, login successful.
-                </h2>
-                <button type="button" onClick={this.inputTeams}>Create Team</button>
+            <Container>
+                <Typography variant='h2'>
+                    Welcome to cricket scoring board, login successful.
+                </Typography>
+                <Button onClick={this.inputTeams} variant='contained' color='primary' fullWidth>Create Team</Button>
                 {this.state.showTeam && <Teams />}
-            </div>
+            </Container>
         );
     }
 

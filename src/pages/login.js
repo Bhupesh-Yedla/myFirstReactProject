@@ -1,5 +1,6 @@
 import 'react-toastify/dist/ReactToastify.css';
 
+import { Button, Container, TextField, Typography } from '@mui/material';
 import React, { useState } from "react";
 import UserService, { login } from "../services/user-service.js";
 
@@ -46,37 +47,40 @@ const Login = (props) => {
   };
 
   return (
-    <div>
-      <h2>Login to my first React app</h2>
+    <Container>
+      <Typography variant='h2'>Login to my first React app</Typography>
       <form onSubmit={submitForm}>
         <div>
-          <label>Username: </label>
-          <input
-            type="text"
+          <TextField label='Username:' 
             name="username"
             placeholder="Enter your name"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            variant="outlined"
+            fullWidth
+            margin="normal"
           />
         </div>
         <div>
-          <label>Password: </label>
-          <input
-            type="password"
+          <TextField label='Password:'
             name="password"
+            type="password"
             placeholder="Key in your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            variant="outlined"
+            fullWidth
+            margin="normal"
           />
         </div>
-        <button type="submit">Submit</button>
+        <Button type="submit" variant='contained'>Submit</Button>
       </form>
-      <h5>
+      <Typography variant='h5'>
         If you don't have existing account, sign up here
         <a href="signup"> Sign up</a>
-      </h5>
+      </Typography>
       <UserService data={{ username, password }} />
-    </div>
+    </Container>
   );
 };
 
